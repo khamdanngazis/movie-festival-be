@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"movie-festival-be/internal/app/repositories"
+	"movie-festival-be/internal/app/services"
 	"movie-festival-be/internal/config"
 	"movie-festival-be/internal/database"
 	"movie-festival-be/internal/interface/handlers"
@@ -25,7 +27,7 @@ func main() {
 	}
 	logging.Log.Infof("Load configuration from %v", *configFilePath)
 
-	_, err = database.InitDBPostgre(&cfg.Database.Main)
+	db, err := database.InitDBPostgre(&cfg.Database.Main)
 
 	if err != nil {
 		logging.Log.Fatalf("Error initiate database connection: %v", err)
@@ -33,10 +35,17 @@ func main() {
 
 	pinghandlers := handlers.NewPinghandlers()
 
+	authRepo := repositories.NewAuthRepository(db)
+	authService := services.NewAuthService(authRepo)
+	authHandler := handlers.NewAuthhandler(authService)
+
 	httpRouter := router.NewMuxRouter()
 
 	//ping handlers
 	httpRouter.GET("/api/v1/ping", pinghandlers.Ping)
+
+	//auth handler
+	httpRouter.POST("/auth/login", authHandler.Login)
 
 	httpRouter.SERVE(cfg.AppPort)
 }
