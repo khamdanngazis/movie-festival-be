@@ -8,8 +8,24 @@ import (
 	"github.com/spf13/viper"
 )
 
+// DatabaseConfig holds the database configuration.
+type Postgre struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	DBName   string
+	SSLMode  string
+	TimeZone string
+	Encoding string
+	Debug    bool
+}
+
 // Config holds the application configuration.
 type Config struct {
+	Database struct {
+		Main Postgre
+	}
 	AppPort string
 }
 

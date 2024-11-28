@@ -1,1 +1,13 @@
+database:
+  main:
+    host: "localhost"
+    port: "5432"
+    user: "postgres"
+    password: "Ida#2018"
+    dbname: "movie_festival"
+    sslmode: "disable"
+    timezone: "Asia/Jakarta"
+    encoding: "UTF8"
+    debug: false
+
 appport: :3000
