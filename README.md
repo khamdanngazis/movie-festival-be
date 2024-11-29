@@ -31,7 +31,7 @@ appport: :3000
 Go to directory /cmd/migration/
 Run Migration
 ```
-go run .\migrate.go --
+go run .\migrate.go
 ```
 
 ### Runing Application
