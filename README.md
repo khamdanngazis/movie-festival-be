@@ -6,7 +6,7 @@ Run go mod tidy to download dependency
 go mod tidy
 ```
 
-### Confiration
+### Configuration
 Go to directory /cmd/config/
 Update config file config.yaml
 ```
