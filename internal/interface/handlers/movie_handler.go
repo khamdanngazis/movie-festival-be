@@ -189,7 +189,14 @@ func (h *MoviesHandler) TrackView(w http.ResponseWriter, r *http.Request) {
 		userID = &user.UserID
 	}
 
-	err = h.movieService.TrackView(ctx, uint(movieID), ipAddress, userID)
+	var request models.TrackViewRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		logging.LogError(ctx, "Error decoding request body: %v", err)
+		middleware.WriteResponse(w, http.StatusBadRequest, "Invalid request body", nil)
+		return
+	}
+
+	err = h.movieService.TrackView(ctx, uint(movieID), ipAddress, userID, request.WatchDuration)
 	if err != nil {
 		middleware.WriteResponse(w, http.StatusInternalServerError, "Failed to track viewership", nil)
 		return
