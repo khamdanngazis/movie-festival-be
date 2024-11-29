@@ -63,6 +63,9 @@ func main() {
 
 	//auth handler
 	httpRouter.POST("/auth/login", authHandler.Login)
+	httpRouter.POSTWithMiddleware("/auth/re-login", authHandler.ExtendToken, middleware.AuthMiddleware)
+	httpRouter.POST("/auth/register", authHandler.Register)
+	httpRouter.DELETEWithMiddleware("/auth/logout", authHandler.Logout, middleware.AuthMiddleware)
 
 	//admin movie handler
 	httpRouter.POSTWithMiddleware("/admin/movie", movieHandler.CreateMovie, middleware.AuthMiddleware)

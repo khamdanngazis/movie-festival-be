@@ -8,6 +8,6 @@ database:
     sslmode: "disable"
     timezone: "Asia/Jakarta"
     encoding: "UTF8"
-    debug: false
+    debug: true
 
 appport: :3000
