@@ -44,6 +44,10 @@ func main() {
 	movieService := services.NewMovieService(movieRepo)
 	movieHandler := handlers.NewMoviesHandler(movieService, authService)
 
+	reportRepo := repositories.NewReportRepository(db)
+	reportService := services.NewReportService(reportRepo)
+	reportHandler := handlers.NewReportHandler(reportService, authService)
+
 	httpRouter := router.NewMuxRouter()
 
 	//ping handlers
@@ -56,9 +60,13 @@ func main() {
 	httpRouter.POSTWithMiddleware("/admin/movie", movieHandler.CreateMovie, middleware.AuthMiddleware)
 	httpRouter.PUTWithMiddleware("/admin/movie/{id}", movieHandler.UpdateMovie, middleware.AuthMiddleware)
 
+	//admin report handler
+	httpRouter.GETWithMiddleware("/admin/reports/views", reportHandler.GetReportViews, middleware.AuthMiddleware)
+
 	//movie
 	httpRouter.GET("/movies", movieHandler.ListMovies)
 	httpRouter.GET("/movies/search", movieHandler.SearchMovies)
+	httpRouter.POSTWithMiddleware("/movies/{id:[0-9]+}/view", movieHandler.TrackView, middleware.GuestMiddleware)
 
 	httpRouter.SERVE(cfg.AppPort)
 }

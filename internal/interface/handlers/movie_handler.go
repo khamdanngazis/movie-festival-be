@@ -167,3 +167,33 @@ func (h *MoviesHandler) SearchMovies(w http.ResponseWriter, r *http.Request) {
 
 	middleware.WriteResponse(w, http.StatusOK, "Movies fetched successfully", response)
 }
+
+func (h *MoviesHandler) TrackView(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	vars := mux.Vars(r)
+	movieID, err := strconv.Atoi(vars["id"])
+	if err != nil || movieID <= 0 {
+		middleware.WriteResponse(w, http.StatusBadRequest, "Invalid movie ID", nil)
+		return
+	}
+
+	ipAddress := r.RemoteAddr
+	if forwarded := r.Header.Get("X-Forwarded-For"); forwarded != "" {
+		ipAddress = forwarded
+	}
+
+	var userID *uint
+	user, _ := middleware.GetUserFromContext(r.Context())
+	if user != nil {
+		userID = &user.UserID
+	}
+
+	err = h.movieService.TrackView(ctx, uint(movieID), ipAddress, userID)
+	if err != nil {
+		middleware.WriteResponse(w, http.StatusInternalServerError, "Failed to track viewership", nil)
+		return
+	}
+
+	middleware.WriteResponse(w, http.StatusOK, "View tracked successfully", nil)
+}

@@ -24,6 +24,9 @@ var (
 	movieRepo    repositories.MovieRepository
 	movieService services.MovieService
 
+	reportRepo    repositories.ReportRepository
+	reportService services.ReportService
+
 	ctx context.Context
 
 	// Define sample movies as a global variable
@@ -68,6 +71,9 @@ func setup() {
 
 	movieRepo = repositories.NewMovieRepository(db)
 	movieService = services.NewMovieService(movieRepo)
+
+	reportRepo = repositories.NewReportRepository(db)
+	reportService = services.NewReportService(reportRepo)
 
 	requestID := uuid.New().String()
 	ctx = context.WithValue(context.Background(), logging.RequestIDKey, requestID)

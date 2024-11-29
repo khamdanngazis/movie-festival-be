@@ -12,6 +12,8 @@ type MovieRepository interface {
 	UpdateMovie(movie *entities.Movie) error
 	FindMovies(page, limit int) ([]entities.Movie, int64, error)
 	SearchMovies(query string, limit int, offset int) ([]entities.Movie, int64, error)
+	TrackViewership(movieID uint, ipAddress string, userID *uint) error
+	FindViewershipByMovieID(movieID uint) (*entities.Viewership, error)
 }
 
 type MovieRepositoryImpl struct {
@@ -81,4 +83,35 @@ func (r *MovieRepositoryImpl) SearchMovies(query string, limit int, offset int) 
 	}
 
 	return movies, total, nil
+}
+
+func (r *MovieRepositoryImpl) FindViewershipByMovieID(movieID uint) (*entities.Viewership, error) {
+	var viewership entities.Viewership
+	err := r.db.Where("movie_id = ?", movieID).First(&viewership).Error
+	if err != nil {
+		return nil, err
+	}
+	return &viewership, nil
+}
+
+func (r *MovieRepositoryImpl) TrackViewership(movieID uint, ipAddress string, userID *uint) error {
+	tx := r.db.Begin()
+
+	if err := tx.Model(&entities.Movie{}).Where("id = ?", movieID).
+		Update("views", gorm.Expr("views + 1")).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	viewership := entities.Viewership{
+		MovieID:   movieID,
+		IPAddress: ipAddress,
+		UserID:    userID,
+	}
+	if err := tx.Create(&viewership).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
 }
