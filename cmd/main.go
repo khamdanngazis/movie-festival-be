@@ -9,6 +9,7 @@ import (
 	"movie-festival-be/internal/interface/handlers"
 	"movie-festival-be/internal/interface/router"
 	"movie-festival-be/package/logging"
+	"movie-festival-be/package/middleware"
 	"os"
 )
 
@@ -39,6 +40,10 @@ func main() {
 	authService := services.NewAuthService(authRepo)
 	authHandler := handlers.NewAuthhandler(authService)
 
+	movieRepo := repositories.NewMovieRepository(db)
+	movieService := services.NewMovieService(movieRepo)
+	movieHandler := handlers.NewMoviesHandler(movieService, authService)
+
 	httpRouter := router.NewMuxRouter()
 
 	//ping handlers
@@ -46,6 +51,14 @@ func main() {
 
 	//auth handler
 	httpRouter.POST("/auth/login", authHandler.Login)
+
+	//admin movie handler
+	httpRouter.POSTWithMiddleware("/admin/movie", movieHandler.CreateMovie, middleware.AuthMiddleware)
+	httpRouter.PUTWithMiddleware("/admin/movie/{id}", movieHandler.UpdateMovie, middleware.AuthMiddleware)
+
+	//movie
+	httpRouter.GET("/movies", movieHandler.ListMovies)
+	httpRouter.GET("/movies/search", movieHandler.SearchMovies)
 
 	httpRouter.SERVE(cfg.AppPort)
 }
