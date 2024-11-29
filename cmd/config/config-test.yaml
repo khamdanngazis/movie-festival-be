@@ -3,7 +3,7 @@ database:
     host: "localhost"
     port: "5432"
     user: "postgres"
-    password: "Ida#2018"
+    password: ""
     dbname: "movie_festival"
     sslmode: "disable"
     timezone: "Asia/Jakarta"
