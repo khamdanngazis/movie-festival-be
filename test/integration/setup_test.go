@@ -27,6 +27,18 @@ var movieReo repositories.MovieRepository
 var movieService services.MovieService
 var movieHandler handlers.MoviesHandler
 
+var reportRepo repositories.ReportRepository
+var reportService services.ReportService
+var reportHandler handlers.ReportHandler
+
+var voteRepo repositories.VoteRepository
+var voteService services.VoteService
+var voteHandler handlers.VoteHandler
+
+var statsRepo repositories.StatsRepository
+var statsService services.StatsService
+var statHandler handlers.StatsHandler
+
 var httpRouter router.Router
 
 var ctx context.Context
@@ -75,6 +87,18 @@ func setup() {
 	movieReo = repositories.NewMovieRepository(db)
 	movieService = services.NewMovieService(movieReo)
 	movieHandler = *handlers.NewMoviesHandler(movieService, authService)
+
+	reportRepo = repositories.NewReportRepository(db)
+	reportService = services.NewReportService(reportRepo)
+	reportHandler = *handlers.NewReportHandler(reportService, authService)
+
+	voteRepo = repositories.NewVoteRepository(db)
+	voteService = services.NewVoteService(voteRepo)
+	voteHandler = *handlers.NewVoteHandler(voteService, authService)
+
+	statsRepo = repositories.NewStatsRepository(db)
+	statsService = services.NewStatsService(statsRepo)
+	statHandler = *handlers.NewStatsHandler(statsService, authService)
 
 	requestID := uuid.New().String()
 	ctx = context.WithValue(context.Background(), logging.RequestIDKey, requestID)

@@ -48,6 +48,14 @@ func main() {
 	reportService := services.NewReportService(reportRepo)
 	reportHandler := handlers.NewReportHandler(reportService, authService)
 
+	voteRepo := repositories.NewVoteRepository(db)
+	voteService := services.NewVoteService(voteRepo)
+	voteHandler := handlers.NewVoteHandler(voteService, authService)
+
+	statsRepo := repositories.NewStatsRepository(db)
+	statService := services.NewStatsService(statsRepo)
+	statHandler := handlers.NewStatsHandler(statService, authService)
+
 	httpRouter := router.NewMuxRouter()
 
 	//ping handlers
@@ -62,11 +70,19 @@ func main() {
 
 	//admin report handler
 	httpRouter.GETWithMiddleware("/admin/reports/views", reportHandler.GetReportViews, middleware.AuthMiddleware)
+	httpRouter.GETWithMiddleware("/admin/stats", statHandler.GetAdminStats, middleware.AuthMiddleware)
 
 	//movie
 	httpRouter.GET("/movies", movieHandler.ListMovies)
 	httpRouter.GET("/movies/search", movieHandler.SearchMovies)
 	httpRouter.POSTWithMiddleware("/movies/{id:[0-9]+}/view", movieHandler.TrackView, middleware.GuestMiddleware)
+
+	//vote movie
+	httpRouter.POSTWithMiddleware("/movies/{id:[0-9]+}/vote", voteHandler.VoteMovie, middleware.AuthMiddleware)
+	httpRouter.DELETEWithMiddleware("/movies/{id:[0-9]+}/vote", voteHandler.Unvote, middleware.AuthMiddleware)
+
+	//user
+	httpRouter.GETWithMiddleware("/users/me/votes", voteHandler.GetUserVotedMovies, middleware.AuthMiddleware)
 
 	httpRouter.SERVE(cfg.AppPort)
 }
