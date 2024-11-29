@@ -1,0 +1,534 @@
+{
+	"info": {
+		"_postman_id": "f51cd069-2e85-448e-90e3-252ce43a37db",
+		"name": "movie-festival",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "844234"
+	},
+	"item": [
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"TOKEN\", jsonData.data.token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"admin@movie-festival.com\",\r\n    \"password\" : \"Symantec2121\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/auth/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"joe@gmail.com\",\r\n    \"password\" : \"Symantec2121\",\r\n    \"name\" : \"joe\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/auth/register",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/auth/logout",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "re login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"TOKEN\", jsonData.data.token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/auth/re-login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auth",
+						"re-login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "admin add movie",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\t\"title\": \"Inception\",\r\n\t\t\"description\": \"A mind-bending thriller by Christopher Nolan.\",\r\n\t\t\"duration\": 148,\r\n\t\t\"artists\": \"Leonardo DiCaprio, Joseph Gordon-Levitt\",\r\n\t\t\"genres\": \"Sci-Fi, Thriller\",\r\n\t\t\"watch_url\": \"https://example.com/inception\"\r\n\t}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/admin/movie",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"admin",
+						"movie"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "admin update movie",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\t\"title\": \"Inception\",\r\n\t\t\"description\": \"A mind-bending thriller by Christopher Nolan.\",\r\n\t\t\"duration\": 148,\r\n\t\t\"artists\": \"Leonardo DiCaprio, Joseph Gordon-Levitt\",\r\n\t\t\"genres\": \"Sci-Fi, Thriller\",\r\n\t\t\"watch_url\": \"https://example.com/inception\"\r\n\t}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/admin/movie/17",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"admin",
+						"movie",
+						"17"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "report views",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\t\"title\": \"Inception s\",\r\n\t\t\"description\": \"A mind-bending thriller by Christopher Nolan. s\",\r\n\t\t\"duration\": 149,\r\n\t\t\"artists\": \"Leonardo DiCaprio, Joseph Gordon-Levitt s\",\r\n\t\t\"genres\": \"Sci-Fi, Thriller s\",\r\n\t\t\"watch_url\": \"https://example.com/inceptions\"\r\n\t}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/admin/reports/views",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"admin",
+						"reports",
+						"views"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "report stats",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\t\"title\": \"Inception s\",\r\n\t\t\"description\": \"A mind-bending thriller by Christopher Nolan. s\",\r\n\t\t\"duration\": 149,\r\n\t\t\"artists\": \"Leonardo DiCaprio, Joseph Gordon-Levitt s\",\r\n\t\t\"genres\": \"Sci-Fi, Thriller s\",\r\n\t\t\"watch_url\": \"https://example.com/inceptions\"\r\n\t}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/admin/stats",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"admin",
+						"stats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list movie",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/movies?page=1&limit=5",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"movies"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search movie",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/movies/search?page=1&limit=5&query=orrest Gump",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"movies",
+						"search"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						},
+						{
+							"key": "query",
+							"value": "orrest Gump"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "track view movie",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Forwarded-For",
+						"value": "",
+						"description": "ip address viewed",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"watch_duration\" : 50\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/movies/91/view",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"movies",
+						"91",
+						"view"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "vote movie",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Forwarded-For",
+						"value": "",
+						"description": "ip address viewed",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "javascript"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/movies/219/vote",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"movies",
+						"219",
+						"vote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Unvote movie",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-Forwarded-For",
+						"value": "",
+						"description": "ip address viewed",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "javascript"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/movies/218/vote",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"movies",
+						"218",
+						"vote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user get voted",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/users/me/votes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"me",
+						"votes"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
