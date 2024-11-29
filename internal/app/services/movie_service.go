@@ -14,7 +14,7 @@ type MovieService interface {
 	UpdateMovie(ctx context.Context, id uint, req models.SaveMovieRequest) (*entities.Movie, error)
 	ListMovies(ctx context.Context, page, limit int) ([]entities.Movie, int64, error)
 	SearchMovies(ctx context.Context, query string, page int, limit int) ([]entities.Movie, int64, error)
-	TrackView(ctx context.Context, movieID uint, ipAddress string, userID *uint) error
+	TrackView(ctx context.Context, movieID uint, ipAddress string, userID *uint, WatchDuration int) error
 }
 
 type MovieServiceImpl struct {
@@ -84,9 +84,9 @@ func (s *MovieServiceImpl) SearchMovies(ctx context.Context, query string, page 
 	return movies, total, nil
 }
 
-func (s *MovieServiceImpl) TrackView(ctx context.Context, movieID uint, ipAddress string, userID *uint) error {
+func (s *MovieServiceImpl) TrackView(ctx context.Context, movieID uint, ipAddress string, userID *uint, WatchDuration int) error {
 
-	err := s.movieRepo.TrackViewership(movieID, ipAddress, userID)
+	err := s.movieRepo.TrackViewership(movieID, ipAddress, userID, WatchDuration)
 	if err != nil {
 		logging.LogError(ctx, "Error tracking viewership in transaction: %v", err)
 		return errors.New("failed to track viewership")

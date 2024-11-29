@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"errors"
+	"log"
 	"movie-festival-be/internal/app/entities"
 
 	"gorm.io/gorm"
@@ -12,7 +14,7 @@ type MovieRepository interface {
 	UpdateMovie(movie *entities.Movie) error
 	FindMovies(page, limit int) ([]entities.Movie, int64, error)
 	SearchMovies(query string, limit int, offset int) ([]entities.Movie, int64, error)
-	TrackViewership(movieID uint, ipAddress string, userID *uint) error
+	TrackViewership(movieID uint, ipAddress string, userID *uint, WatchDuration int) error
 	FindViewershipByMovieID(movieID uint) (*entities.Viewership, error)
 }
 
@@ -94,21 +96,38 @@ func (r *MovieRepositoryImpl) FindViewershipByMovieID(movieID uint) (*entities.V
 	return &viewership, nil
 }
 
-func (r *MovieRepositoryImpl) TrackViewership(movieID uint, ipAddress string, userID *uint) error {
-	tx := r.db.Begin()
+func (r *MovieRepositoryImpl) TrackViewership(movieID uint, ipAddress string, userID *uint, watchDuration int) error {
+	if watchDuration <= 0 {
+		return errors.New("watch duration must be greater than zero")
+	}
 
-	if err := tx.Model(&entities.Movie{}).Where("id = ?", movieID).
-		Update("views", gorm.Expr("views + 1")).Error; err != nil {
-		tx.Rollback()
-		return err
+	tx := r.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			panic(r)
+		} else if err := tx.Error; err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if watchDuration >= 60 {
+		if err := tx.Model(&entities.Movie{}).Where("id = ?", movieID).
+			Update("views", gorm.Expr("views + 1")).Error; err != nil {
+			log.Printf("Failed to increment views for movie ID %d: %v", movieID, err)
+			tx.Rollback()
+			return err
+		}
 	}
 
 	viewership := entities.Viewership{
-		MovieID:   movieID,
-		IPAddress: ipAddress,
-		UserID:    userID,
+		MovieID:       movieID,
+		IPAddress:     ipAddress,
+		UserID:        userID,
+		WatchDuration: watchDuration,
 	}
 	if err := tx.Create(&viewership).Error; err != nil {
+		log.Printf("Failed to create viewership record: %v", err)
 		tx.Rollback()
 		return err
 	}
