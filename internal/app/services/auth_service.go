@@ -11,6 +11,7 @@ import (
 
 type AuthService interface {
 	Login(ctx context.Context, request models.LoginRequest) (string, error)
+	IsLogin(ctx context.Context, userID uint) bool
 }
 
 type AuthServiceImpl struct {
@@ -46,4 +47,13 @@ func (s *AuthServiceImpl) Login(ctx context.Context, request models.LoginRequest
 	}
 
 	return token, nil
+}
+
+func (s *AuthServiceImpl) IsLogin(ctx context.Context, userID uint) bool {
+	user, err := s.authRepo.FindUserByID(userID)
+	if err != nil {
+		logging.LogError(ctx, "Failed to find login status: %v", err)
+		return false
+	}
+	return user.LoggedIn
 }
