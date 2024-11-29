@@ -1,8 +1,6 @@
 # movie-festival-be
 
-## instalation
-
-## Intiate Application
+## Instalation
 Run go mod tidy to download dependency
 ```
 go mod tidy
